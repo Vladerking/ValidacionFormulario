@@ -1,0 +1,200 @@
+
+<div th:text="${imagen_enviar_x==null} ? '' : #{imagen_enviar_x}  + ' ' +  ${imagen_enviar_x}" />
+
+<div th:text="${imagen_enviar_y==null} ? '' : #{imagen_enviar_y} + ' ' + ${imagen_enviar_y}" />
+
+
+<h1 th:text="#{formulario} + ' ' +  ${titulo}"></h1>
+<h3 th:text="#{iteracion} + ' ' +  ${iteraciones}"></h3>
+<h3 th:text="${mensajeOK}" class="correcto"></h3>
+<h3 th:text="${mensajeNOK}" class="error"></h3>
+
+
+<select id="idioma">
+    <option value=""></option>
+    <option th:each="pais: ${paises}"
+            th:value="${pais.key}" th:text="${pais.value.getIdioma()}"</option>
+</select>
+
+<form id="formulario" method="POST" action="recibe-parametros" th:object="${datosFormulario}">
+
+    <!-- Deberia mostrar el mensaje del h2 pero no lo muestra -->
+    <div th:if="${#fields.hasGlobalErrors()}" class="error">
+<!--        <h2 th:text="#{errorApp}" class="error"></h2>-->
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+    </div>
+
+    <input type="hidden" id="iteraciones" name="iteraciones" th:value="${iteraciones}"/>
+
+    <fieldset>
+        <legend th:text="#{validar-formulario.datos-usuario}"></legend>
+        <label class="ast" for="nombre" th:text="#{validar-formulario.nombre}"></label>
+        <input type="text" th:field="*{nombre}" tabindex="1" th:placeholder="#{validar-formulario.pHolderNombre}"/>
+        <!--        th:each porque puede tener varios errores-->
+        <div th:each="error : ${#fields.errors('nombre')}"
+             th:text="${error}" class="error"/>
+
+        <label class="ast"  for="clave" th:text="#{validar-formulario.clave}"></label>
+        <input type="password" th:field="*{clave}" tabindex="2" th:placeholder="#{validar-formulario.pHolderClave}"/>
+        <div th:each="error : ${#fields.errors('clave')}"
+             th:text="${error}" class="error"/>
+
+        <label class="ast"  for="confirmarClave" th:text="#{validar-formulario.confirmar-clave}"></label>
+        <input type="password" th:field="*{confirmarClave}" tabindex="3" th:placeholder="#{validar-formulario.pHolderClave}"/>
+        <div th:each="error : ${#fields.errors('confirmarClave')}"
+             th:text="${error}" class="error"/>
+
+        <input type="button" id="mostrarClave"
+               value="Mostrar Claves en abierto"
+               onclick="mostrarOcultarClave();"/>
+
+        <br/><br/>
+    </fieldset>
+    <br/>
+    <fieldset>
+        <legend th:text="#{validar-formulario.datos-personales}"></legend>
+        <label class="ast"  th:text="#{validar-formulario.genero}"></label>
+        <input type="radio" th:field="*{generoSeleccionado}"
+               th:each="genero : ${generos}"
+               th:value="${genero.key}"
+               th:text="${genero.value}"
+               th:checked="${genero.key == generoSeleccionado}"/>
+        <div th:each="error : ${#fields.errors('generoSeleccionado')}"
+             th:text="${error}" class="error"/>
+
+        <input type="button" id="deseleccionarRadios"
+               value="Deseleccionar radios"
+               onclick="deseleccionaRadios('generoSeleccionado');"/>
+
+        <label class="ast"  th:text="#{validar-formulario.pais}"></label>
+        <select th:field="*{paisSeleccionado}">
+            <option th:each="pais: ${paises}"
+                    th:value="${pais.key}" th:text="${pais.value.getPais()}"
+                    th:selected="${pais.key == paisSeleccionado}"></option>
+        </select>
+        <div th:each="error : ${#fields.errors('generoSeleccionado')}"
+             th:text="${error}" class="error"/>
+
+        <label class="ast"  for="fechaNacimiento" th:text="#{validar-formulario.fecha_nace}"></label>
+        <input type="text" th:field="*{fechaNacimiento}" th:placeholder="#{validar-formulario.pHolderFecha}"/>
+        <div th:each="error : ${#fields.errors('fechaNacimiento')}"
+             th:text="${error}" class="error"/>
+
+        <br/><br/>
+
+        <label class="tng" for="edad" th:text="#{validar-formulario.edad}"></label>
+        <input type="text" th:field="*{edad}" th:placeholder="#{validar-formulario.pHolderEdad}"/>
+        <div th:each="error : ${#fields.errors('edad')}"
+             th:text="${error}" class="error"/>
+
+
+        <label class="ast"  for="peso" th:text="#{validar-formulario.peso}"></label>
+        <input type="text" th:field="*{peso}" th:placeholder="#{validar-formulario.pHolderPeso}"/>
+        <div th:each="error : ${#fields.errors('peso')}"
+             th:text="${error}" class="error"/>
+        <br/>
+
+    </fieldset>
+    <br/>
+    <fieldset>
+        <legend th:text="#{validar-formulario.datos-contacto}"></legend>
+        <label class="tng"  for="prefijoTelefonicoPais" th:text="#{validar-formulario.prefijo}"></label>
+        <select th:field="*{prefijoTelefonicoPais}">
+            <option th:each="pais: ${paises}"
+                    th:value="${pais.key}" th:text="${pais.value.getNombreArchivoBandera()} + ' | ' + ${pais.value.getPrefijoTelefonico()}"
+                    th:selected="${pais.key == prefijoTelefonicoPais}"></option>
+        </select>
+        <div th:each="error : ${#fields.errors('prefijoTelefonicoPais')}"
+             th:text="${error}" class="error"/>
+
+
+        <label class="tng"  for="telefono" th:text="#{validar-formulario.telefono}"></label>
+        <input type="text" th:field="*{telefono}" th:placeholder="#{validar-formulario.pHolderTel}"/>
+        <div th:each="error : ${#fields.errors('telefono')}"
+             th:text="${error}" class="error"/>
+
+        <label class="tng"  for="email" th:text="#{validar-formulario.email}"></label>
+        <input type="text" th:field="*{email}" th:placeholder="#{validar-formulario.pHolderEmail}"/>
+        <div th:each="error : ${#fields.errors('email')}"
+             th:text="${error}" class="error"/>
+
+        <label for="url" th:text="#{validar-formulario.url}"></label>
+        <input type="text" th:field="*{url}" th:placeholder="#{validar-formulario.pHolderUrl}"/>
+        <div th:each="error : ${#fields.errors('url')}"
+             th:text="${error}" class="error"/>
+
+    </fieldset>
+    <br/>
+    <fieldset>
+        <legend th:text="#{validar-formulario.datos-otraInfo}"></legend>
+        <label th:text="#{validar-formulario.aficiones}"></label>
+        <br/>
+        <input th:each="aficion:${aficiones}" type="checkbox"
+               th:field="*{aficionesSeleccionadas}"
+               th:value="${aficion.key}"
+               th:text="${aficion.value}"
+               th:checked="${!#lists.isEmpty(aficionesSeleccionadas) and aficionesSeleccionadas.contains(aficion.key)}"/>
+        <div th:each="error : ${#fields.errors('aficionesSeleccionadas')}"
+             th:text="${error}" class="error"/>
+
+        <input type="button" id="seleccionarTodos"
+               value="Seleccionar checkbox"
+               onclick="selecCheck();" />
+
+        <input type="button" id="deseleccionarTodos"
+               value="Deseleccionar checkbox"
+               onclick="desCheck();" />
+
+
+        <label th:text="#{validar-formulario.musicas}"></label>
+        <select th:field="*{musicasSeleccionadas}" multiple size="2">
+            <option th:each="tipoMusica : ${musicas}"
+                    th:value="${tipoMusica.key}"
+                    th:text="${tipoMusica.value}"
+                    th:selected="${!#lists.isEmpty(musicasSeleccionadas) and musicasSeleccionadas.contains(tipoMusica.key)}"></option>
+        </select>
+        <div th:each="error : ${#fields.errors('musicasSeleccionadas')}"
+             th:text="${error}" class="error"/>
+
+        <input type="button" id="seleccionarTodosSelect"
+               value="Seleccionar select Multiple" onclick="selecSelect();"/>
+
+        <input type="button" id="deseleccionarTodosSelect"
+               value="Deseleccionar select Multiple" onclick="desSelect();"/>
+
+        <br/><br/><br/>
+        <label class="tng"  th:text="#{validar-formulario.archivo}"></label>
+        <input type="file" th:field="*{archivos}" multiple="multiple"/>
+        <div th:each="error : ${#fields.errors('archivos')}"
+             th:text="${error}" class="error"/>
+
+        <label th:text="#{validar-formulario.comentarios}"></label>
+        <textarea cols="50" rows="5" th:field="*{comentarios}" th:placeholder="#{validar-formulario.pHolderCom}" ><th:block th:text="${comentario}"/></textarea>
+        <div th:each="error : ${#fields.errors('comentarios')}"
+             th:text="${error}" class="error"/>
+    </fieldset>
+    <br/>
+    <fieldset>
+        <legend th:text="#{validar-formulario.datos-operaciones}"></legend>
+        <label th:text="#{validar-formulario.licencia}"></label>
+        <input type="checkbox" th:field="*{licencia}" />
+        <div th:each="error : ${#fields.errors('licencia')}"
+             th:text="${error}" class="error"/>
+        <br/><br/>
+
+        <input type="submit" th:value="#{validar-formulario.enviar}" onclick="confirmaEnvio('formulario');"/>
+        <input type="reset" th:value="#{validar-formulario.resetear}" onclick="confirmaReseteo('formulario');"/>
+        <input type="button" th:value="#{validar-formulario.vaciar}" onclick="confirmaBorrado();"/>
+        <input type="image" id="imagen_enviar" src="/img/flechaDerecha.png" name="imagen"
+               th:alt="#{validar-formulario.imagen}" onclick="confirmaEnvio('formulario');"/>
+    </fieldset>
+
+</form>
+<br/>
+<div th:text="${total_parametros==null} ? '' : #{validar-formulario.totalParametros} + ' ' +  ${total_parametros} "/>
+<!--    <th:block th:text="${total_parametros==null} ? '' : 'Se han recibido: ' + ${total_parametros} +' parametros desde el formulario original'"/>
+</div>-->
+
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+#imagen_enviar{
+    height: 50px;
+    width: 50px;
+}
+
+label.ast:before {
+    content: ' \002A';
+    color: red;
+    font-weight: bold;
+}
+
+label.tng:before {
+    content: ' \2023';
+    color: brown;
+    font-weight: bold;
+}
+
+.error{
+    color:red;
+    font-weight: bold;
+}
+
+.correcto{
+    color:green;
+    font-weight: bold;
+}
